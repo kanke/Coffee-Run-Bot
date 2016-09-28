@@ -157,7 +157,7 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
             };
 
             if (channel.order[x].user == message.user) {
-                attachment.actions: [
+                attachment.actions = [
                     {
                        "text": "Remove",
                         "name": "remove",
@@ -210,7 +210,7 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
             };
 
             if (channel.order[x].user == message.user) {
-                attachment.actions: [
+                attachment.actions = [
                     {
                        "text": "Remove",
                         "name": "remove",
@@ -270,7 +270,7 @@ controller.on('interactive_message_callback', function(bot, message) {
             };
 
             if (channel.order[x].user == message.user) {
-                attachment.actions: [
+                attachment.actions = [
                     {
                        "text": "Remove",
                         "name": "remove",
