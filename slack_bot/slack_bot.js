@@ -144,7 +144,6 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
 
         var reply = {
             icon_emoji: ':coffee:',
-            response_type: 'ephemeral',
             text: 'Added! Here is the current order.',
             attachments: [],
         }
@@ -197,7 +196,6 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
 
         var reply = {
             icon_emoji: ':coffee:',
-            response_type: 'ephemeral',
             text: 'Here is the current order. Tell me `add <item>` to add items.',
             attachments: [],
         }
