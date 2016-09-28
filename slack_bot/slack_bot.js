@@ -172,31 +172,51 @@ controller.on('rtm_close',function(bot) {
 });
 
 
-controller.hears(['add (.*)'],'direct_mention,direct_message',function(bot,message) {
+controller.hears(['start'],'direct_mention',function(bot,message) {
 
-    controller.storage.users.get(message.user, function(err, user) {
+    controller.storage.channels.get(message.channel, function(err, channel) {
 
-        if (!user) {
-            user = {
-                id: message.user,
-                list: []
+        if (!channel) {
+            channel = {
+                id: message.channel,
+                order: []
             }
         }
 
-        user.list.push({
-            id: message.ts,
-            text: message.match[1],
-        });
+        bot.reply(message,'@here <@' + user_id + '> is going for a coffee run. Say `add` to add order something or `list` to view the current order.');
 
-        bot.reply(message,'Added to list. Say `list` to view or manage list.');
-
-        controller.storage.users.save(user);
+        controller.storage.channels.save(channel);
 
     });
 });
 
 
-controller.hears(['list','tasks'],'direct_mention,direct_message',function(bot,message) {
+controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
+
+    controller.storage.channels.get(message.channel, function(err, channel) {
+
+        if (!channel) {
+            channel = {
+                id: message.channel,
+                order: []
+            }
+        }
+
+        channel.order.push({
+            id: message.ts,
+            text: message.match[1],
+            for: message.user
+        });
+
+        bot.reply(message,'Added to the order. Say `list` to view or manage the current order.');
+
+        controller.storage.channels.save(channel);
+
+    });
+});
+
+
+controller.hears(['list'],'direct_mention',function(bot,message) {
 
     controller.storage.users.get(message.user, function(err, user) {
 
