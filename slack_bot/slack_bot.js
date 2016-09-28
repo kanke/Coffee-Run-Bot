@@ -144,16 +144,20 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
 
         var reply = {
             icon_emoji: ':coffee:',
+            response_type: 'ephemeral',
             text: 'Added! Here is the current order.',
             attachments: [],
         }
 
         for (var x = 0; x < channel.order.length; x++) {
-            reply.attachments.push({
+            attachment = {
                 text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
                 callback_id: message.user + '-' + channel.order[x].id,
-                attachment_type: 'default',
-                actions: [
+                attachment_type: 'default'
+            };
+
+            if (channel.order[x].user == message.user) {
+                attachment.actions: [
                     {
                        "text": "Remove",
                         "name": "remove",
@@ -162,7 +166,9 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
                         "type": "button"
                     }
                 ]
-            })
+            }
+
+            reply.attachments.push(attachment);
         }
 
         bot.reply(message, reply);
@@ -191,16 +197,20 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
 
         var reply = {
             icon_emoji: ':coffee:',
+            response_type: 'ephemeral',
             text: 'Here is the current order. Tell me `add <item>` to add items.',
             attachments: [],
         }
 
         for (var x = 0; x < channel.order.length; x++) {
-            reply.attachments.push({
+            attachment = {
                 text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
                 callback_id: message.user + '-' + channel.order[x].id,
-                attachment_type: 'default',
-                actions: [
+                attachment_type: 'default'
+            };
+
+            if (channel.order[x].user == message.user) {
+                attachment.actions: [
                     {
                        "text": "Remove",
                         "name": "remove",
@@ -209,7 +219,9 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
                         "type": "button"
                     }
                 ]
-            })
+            }
+
+            reply.attachments.push(attachment);
         }
 
         bot.reply(message, reply);
@@ -251,11 +263,14 @@ controller.on('interactive_message_callback', function(bot, message) {
         }
 
         for (var x = 0; x < channel.order.length; x++) {
-            reply.attachments.push({
+            attachment = {
                 text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
-                callback_id: user_id + '-' + channel.order[x].id,
-                attachment_type: 'default',
-                actions: [
+                callback_id: message.user + '-' + channel.order[x].id,
+                attachment_type: 'default'
+            };
+
+            if (channel.order[x].user == message.user) {
+                attachment.actions: [
                     {
                        "text": "Remove",
                         "name": "remove",
@@ -264,7 +279,9 @@ controller.on('interactive_message_callback', function(bot, message) {
                         "type": "button"
                     }
                 ]
-            })
+            }
+
+            reply.attachments.push(attachment);
         }
 
         bot.replyInteractive(message, reply);
