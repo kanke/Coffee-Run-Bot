@@ -170,7 +170,7 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
             reply.attachments.push(attachment);
         }
 
-        bot.replyPrivate(message, reply);
+        bot.reply(message, reply);
 
         controller.storage.channels.save(channel);
 
@@ -222,7 +222,7 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
             reply.attachments.push(attachment);
         }
 
-        bot.replyPrivate(message, reply);
+        bot.reply(message, reply);
 
         controller.storage.channels.save(channel);
 
