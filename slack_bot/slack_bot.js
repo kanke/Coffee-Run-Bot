@@ -112,7 +112,12 @@ controller.hears(['start'],'direct_mention',function(bot,message) {
             }
         }
 
-        bot.reply(message,'!here <@' + message.user + '> is going for a coffee run. You can tell me to `add` something to the order or `list` the current order.');
+        var reply = {
+            icon_emoji: ':coffee:',
+            text: '<!here> <@' + message.user + '> is going for a coffee run. You can tell me to `add` something to the order or `list` the current order.'
+        }
+
+        bot.reply(message, reply);
 
         controller.storage.channels.save(channel);
 
@@ -137,7 +142,30 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
             user: message.user
         });
 
-        bot.reply(message,'Added to the order. Say `list` to view or manage the current order.');
+        var reply = {
+            icon_emoji: ':coffee:',
+            text: 'Added! Here is the current order.',
+            attachments: [],
+        }
+
+        for (var x = 0; x < channel.order.length; x++) {
+            reply.attachments.push({
+                text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
+                callback_id: message.user + '-' + channel.order[x].id,
+                attachment_type: 'default',
+                actions: [
+                    {
+                       "text": "Remove",
+                        "name": "remove",
+                        "value": "remove",
+                        "style": "danger",
+                        "type": "button"
+                    }
+                ]
+            })
+        }
+
+        bot.reply(message, reply);
 
         controller.storage.channels.save(channel);
 
@@ -162,6 +190,7 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
         }
 
         var reply = {
+            icon_emoji: ':coffee:',
             text: 'Here is the current order. Tell me `add <item>` to add items.',
             attachments: [],
         }
@@ -216,6 +245,7 @@ controller.on('interactive_message_callback', function(bot, message) {
 
 
         var reply = {
+            icon_emoji: ':coffee:',
             text: 'Here is the current order:',
             attachments: [],
         }
@@ -242,33 +272,6 @@ controller.on('interactive_message_callback', function(bot, message) {
 
     });
 
-});
-
-controller.hears('interactive', 'direct_message', function(bot, message) {
-
-    bot.reply(message, {
-        attachments:[
-            {
-                title: 'Do you want to interact with my buttons?',
-                callback_id: '123',
-                attachment_type: 'default',
-                actions: [
-                    {
-                        "name":"yes",
-                        "text": "Yes",
-                        "value": "yes",
-                        "type": "button",
-                    },
-                    {
-                        "name":"no",
-                        "text": "No",
-                        "value": "no",
-                        "type": "button",
-                    }
-                ]
-            }
-        ]
-    });
 });
 
 
