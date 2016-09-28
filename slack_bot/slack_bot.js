@@ -190,7 +190,11 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
         }
 
         if (!channel.order || !channel.order.length) {
-            bot.reply(message,'The current order is empty.');
+            var reply = {
+                icon_emoji: ':coffee:',
+                text: 'The current order is empty.',
+            }
+            bot.reply(message, reply);
             return;
         }
 
@@ -301,7 +305,11 @@ controller.hears(['run'],'direct_mention',function(bot,message) {
         }
 
         if (!channel.order || !channel.order.length) {
-            bot.reply(message,'The current order is empty.');
+            var reply = {
+                icon_emoji: ':coffee:',
+                text: 'The current order is empty.',
+            }
+            bot.reply(message, reply);
             return;
         }
 
@@ -341,7 +349,11 @@ controller.hears(['finish'],'direct_mention',function(bot,message) {
         }
 
         if (!channel.order || !channel.order.length) {
-            bot.reply(message,'The current order is empty.');
+            var reply = {
+                icon_emoji: ':coffee:',
+                text: 'The current order is empty.',
+            }
+            bot.reply(message, reply);
             return;
         }
 
