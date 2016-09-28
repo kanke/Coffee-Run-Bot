@@ -247,7 +247,7 @@ controller.on('interactive_message_callback', function(bot, message) {
 
         for (var x = 0; x < channel.order.length; x++) {
             if (channel.order[x].id == item_id) {
-                if (message.actions[0].value=='delete') {
+                if (message.actions[0].value=='remove') {
                     channel.order.splice(x,1);
                 }
             }
