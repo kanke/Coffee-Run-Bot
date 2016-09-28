@@ -114,7 +114,7 @@ controller.hears(['start'],'direct_mention',function(bot,message) {
 
         var reply = {
             icon_emoji: ':coffee:',
-            text: '<!here> <@' + message.user + '> is going for a coffee run. You can tell me to `add` something to the order or `list` the current order.'
+            text: '<!here> <@' + message.user + '> is going for a coffee run. Say `@coffeebot add ...` to add an item to the order.'
         }
 
         bot.reply(message, reply);
@@ -170,7 +170,7 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
             reply.attachments.push(attachment);
         }
 
-        bot.reply(message, reply);
+        bot.replyPrivate(message, reply);
 
         controller.storage.channels.save(channel);
 
@@ -196,7 +196,7 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
 
         var reply = {
             icon_emoji: ':coffee:',
-            text: 'Here is the current order. Tell me `add <item>` to add items.',
+            text: 'Here is the current order. Say `@coffeebot add ...` to add an item.',
             attachments: [],
         }
 
@@ -222,7 +222,7 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
             reply.attachments.push(attachment);
         }
 
-        bot.reply(message, reply);
+        bot.replyPrivate(message, reply);
 
         controller.storage.channels.save(channel);
 
@@ -289,6 +289,74 @@ controller.on('interactive_message_callback', function(bot, message) {
 
 });
 
+controller.hears(['run'],'direct_mention',function(bot,message) {
+
+    controller.storage.channels.get(message.channel, function(err, channel) {
+
+        if (!channel) {
+            channel = {
+                id: message.channel,
+                order: []
+            }
+        }
+
+        if (!channel.order || !channel.order.length) {
+            bot.reply(message,'The current order is empty.');
+            return;
+        }
+
+        var reply = {
+            icon_emoji: ':coffee:',
+            text: 'Orders closed! Here is the final list, <@' + message.user + '>.',
+            attachments: [],
+        }
+
+        for (var x = 0; x < channel.order.length; x++) {
+            attachment = {
+                text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
+                callback_id: message.user + '-' + channel.order[x].id,
+                attachment_type: 'default'
+            };
+
+            reply.attachments.push(attachment);
+        }
+
+        bot.reply(message, reply);
+
+        controller.storage.channels.save(channel);
+
+    });
+
+});
+
+controller.hears(['finish'],'direct_mention',function(bot,message) {
+
+    controller.storage.channels.get(message.channel, function(err, channel) {
+
+        if (!channel) {
+            channel = {
+                id: message.channel,
+                order: []
+            }
+        }
+
+        if (!channel.order || !channel.order.length) {
+            bot.reply(message,'The current order is empty.');
+            return;
+        }
+
+        var reply = {
+            icon_emoji: ':coffee:',
+            text: 'The current order has been finished! Enjoy your coffee!',
+        }
+
+        bot.reply(message, reply);
+
+        controller.storage.channels.save(channel);
+
+    });
+
+});
 
 controller.hears('^stop','direct_message',function(bot,message) {
   bot.reply(message,'Goodbye');
