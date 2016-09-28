@@ -25,7 +25,7 @@ This is a sample Slack Button application that adds a bot to one or many slack t
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /* Uses the slack button feature to offer a real time bot to multiple teams */
-var Botkit = require('../lib/Botkit.js');
+var Botkit = require('./lib/Botkit.js');
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.port) {
   console.log('Error: Specify clientId clientSecret and port in environment');
@@ -63,77 +63,6 @@ var _bots = {};
 function trackBot(bot) {
   _bots[bot.config.token] = bot;
 }
-
-
-controller.on('interactive_message_callback', function(bot, message) {
-
-    var ids = message.callback_id.split(/\-/);
-    var user_id = ids[0];
-    var item_id = ids[1];
-
-    controller.storage.users.get(user_id, function(err, user) {
-
-        if (!user) {
-            user = {
-                id: user_id,
-                list: []
-            }
-        }
-
-        for (var x = 0; x < user.list.length; x++) {
-            if (user.list[x].id == item_id) {
-                if (message.actions[0].value=='flag') {
-                    user.list[x].flagged = !user.list[x].flagged;
-                }
-                if (message.actions[0].value=='delete') {
-                    user.list.splice(x,1);
-                }
-            }
-        }
-
-
-        var reply = {
-            text: 'Here is <@' + user_id + '>s list:',
-            attachments: [],
-        }
-
-        for (var x = 0; x < user.list.length; x++) {
-            reply.attachments.push({
-                title: user.list[x].text + (user.list[x].flagged? ' *FLAGGED*' : ''),
-                callback_id: user_id + '-' + user.list[x].id,
-                attachment_type: 'default',
-                actions: [
-                    {
-                        "name":"flag",
-                        "text": ":waving_black_flag: Flag",
-                        "value": "flag",
-                        "type": "button",
-                    },
-                    {
-                       "text": "Delete",
-                        "name": "delete",
-                        "value": "delete",
-                        "style": "danger",
-                        "type": "button",
-                        "confirm": {
-                          "title": "Are you sure?",
-                          "text": "This will do something!",
-                          "ok_text": "Yes",
-                          "dismiss_text": "No"
-                        }
-                    }
-                ]
-            })
-        }
-
-        bot.replyInteractive(message, reply);
-        controller.storage.users.save(user);
-
-
-    });
-
-});
-
 
 controller.on('create_bot',function(bot,config) {
 
@@ -183,7 +112,7 @@ controller.hears(['start'],'direct_mention',function(bot,message) {
             }
         }
 
-        bot.reply(message,'@here <@' + user_id + '> is going for a coffee run. Say `add` to add order something or `list` to view the current order.');
+        bot.reply(message,'!here <@' + message.user + '> is going for a coffee run. You can tell me to `add` something to the order or `list` the current order.');
 
         controller.storage.channels.save(channel);
 
@@ -205,7 +134,7 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
         channel.order.push({
             id: message.ts,
             text: message.match[1],
-            for: message.user
+            user: message.user
         });
 
         bot.reply(message,'Added to the order. Say `list` to view or manage the current order.');
@@ -218,61 +147,37 @@ controller.hears(['add (.*)'],'direct_mention',function(bot,message) {
 
 controller.hears(['list'],'direct_mention',function(bot,message) {
 
-    controller.storage.users.get(message.user, function(err, user) {
+    controller.storage.channels.get(message.channel, function(err, channel) {
 
-        if (!user) {
-            user = {
-                id: message.user,
-                list: []
+        if (!channel) {
+            channel = {
+                id: message.channel,
+                order: []
             }
         }
 
-        if (!user.list || !user.list.length) {
-            user.list = [
-                {
-                    'id': 1,
-                    'text': 'Test Item 1'
-                },
-                {
-                    'id': 2,
-                    'text': 'Test Item 2'
-                },
-                {
-                    'id': 3,
-                    'text': 'Test Item 3'
-                }
-            ]
+        if (!channel.order || !channel.order.length) {
+            bot.reply(message,'The current order is empty.');
+            return;
         }
 
         var reply = {
-            text: 'Here is your list. Say `add <item>` to add items.',
+            text: 'Here is the current order. Tell me `add <item>` to add items.',
             attachments: [],
         }
 
-        for (var x = 0; x < user.list.length; x++) {
+        for (var x = 0; x < channel.order.length; x++) {
             reply.attachments.push({
-                title: user.list[x].text + (user.list[x].flagged? ' *FLAGGED*' : ''),
-                callback_id: message.user + '-' + user.list[x].id,
+                text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
+                callback_id: message.user + '-' + channel.order[x].id,
                 attachment_type: 'default',
                 actions: [
                     {
-                        "name":"flag",
-                        "text": ":waving_black_flag: Flag",
-                        "value": "flag",
-                        "type": "button",
-                    },
-                    {
-                       "text": "Delete",
-                        "name": "delete",
-                        "value": "delete",
+                       "text": "Remove",
+                        "name": "remove",
+                        "value": "remove",
                         "style": "danger",
-                        "type": "button",
-                        "confirm": {
-                          "title": "Are you sure?",
-                          "text": "This will do something!",
-                          "ok_text": "Yes",
-                          "dismiss_text": "No"
-                        }
+                        "type": "button"
                     }
                 ]
             })
@@ -280,7 +185,60 @@ controller.hears(['list'],'direct_mention',function(bot,message) {
 
         bot.reply(message, reply);
 
-        controller.storage.users.save(user);
+        controller.storage.channels.save(channel);
+
+    });
+
+});
+
+controller.on('interactive_message_callback', function(bot, message) {
+
+    var ids = message.callback_id.split(/\-/);
+    var user_id = ids[0];
+    var item_id = ids[1];
+
+    controller.storage.channels.get(message.channel, function(err, channel) {
+
+        if (!channel) {
+            channel = {
+                id: message.channel,
+                order: []
+            }
+        }
+
+        for (var x = 0; x < channel.order.length; x++) {
+            if (channel.order[x].id == item_id) {
+                if (message.actions[0].value=='delete') {
+                    channel.order.splice(x,1);
+                }
+            }
+        }
+
+
+        var reply = {
+            text: 'Here is the current order:',
+            attachments: [],
+        }
+
+        for (var x = 0; x < channel.order.length; x++) {
+            reply.attachments.push({
+                text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
+                callback_id: user_id + '-' + channel.order[x].id,
+                attachment_type: 'default',
+                actions: [
+                    {
+                       "text": "Remove",
+                        "name": "remove",
+                        "value": "remove",
+                        "style": "danger",
+                        "type": "button"
+                    }
+                ]
+            })
+        }
+
+        bot.replyInteractive(message, reply);
+        controller.storage.channels.save(channel);
 
     });
 
