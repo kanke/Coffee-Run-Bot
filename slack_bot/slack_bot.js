@@ -263,7 +263,7 @@ controller.on('interactive_message_callback', function(bot, message) {
         for (var x = 0; x < channel.order.length; x++) {
             attachment = {
                 text: channel.order[x].text + ' for <@' + channel.order[x].user + '>',
-                callback_id: message.user + '-' + channel.order[x].id,
+                callback_id: user_id + '-' + channel.order[x].id,
                 attachment_type: 'default'
             };
 
