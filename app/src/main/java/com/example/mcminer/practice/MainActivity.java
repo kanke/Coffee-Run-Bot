@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import org.altbeacon.beacon.Region;
@@ -76,8 +77,8 @@ public class MainActivity extends Activity implements BootstrapNotifier {
         //Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("slack://16?id=C0PT94S1X&team=T02GQ0BEQ&message=test"));
 
         String finalUrl = "javascript:" +
-                "var to = 'https://hooks.slack.com/services/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';" +
-                "var p = payload= {channel:'#16',username:'Coffee Bot',text:'Your coffee has arrived!\nPlease come downstairs to pick it up.',icon_emoji:':coffee_bot:'};"+
+                "var to = 'https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX';" +
+                "var p = payload={username: 'Coffee Bot',text: 'Your coffee has arrived!\nPlease come downstairs to pick it up.',icon_emoji: ':coffee_bot:', channel: '#16'};"+
                 "var myForm = document.createElement('form');" +
                 "myForm.method='post' ;" +
                 "myForm.action = to;" +
@@ -91,7 +92,11 @@ public class MainActivity extends Activity implements BootstrapNotifier {
                 "document.body.appendChild(myForm) ;" +
                 "myForm.submit() ;" +
                 "document.body.removeChild(myForm) ;";
+        Log.d("finalurl", finalUrl);
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalUrl));
+
+
+        Log.d("Uri.parse(finalUrl)", String.valueOf(Uri.parse(finalUrl)));
         // Intent notificationIntent = new Intent(MainActivity.this, SendMessage.class);
 
 
