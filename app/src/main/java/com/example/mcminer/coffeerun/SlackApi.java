@@ -1,4 +1,4 @@
-package com.example.mcminer.practice;
+package com.example.mcminer.coffeerun;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

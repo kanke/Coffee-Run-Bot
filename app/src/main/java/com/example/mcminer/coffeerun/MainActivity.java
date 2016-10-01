@@ -1,4 +1,4 @@
-package com.example.mcminer.practice;
+package com.example.mcminer.coffeerun;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -12,19 +12,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.example.mcminer.coffee.R;
+
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
 
 public class MainActivity extends Activity implements BootstrapNotifier {
-
-    private static final String CUSTOM_INTENT = "Custom_intent";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ((mcminerApp) getApplication()).setmainactivity(this);
+        ((coffeeRunApp) getApplication()).setmainactivity(this);
         // stop listening to touches
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         // remove the icon from App Drawer

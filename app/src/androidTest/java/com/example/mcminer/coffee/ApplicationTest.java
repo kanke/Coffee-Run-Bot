@@ -1,4 +1,4 @@
-package com.example.mcminer.practice;
+package com.example.mcminer.coffee;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mcminer.practice" >
+    package="com.example.mcminer.coffee" >
 <uses-permission android:name="android.permission.bluetooth"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -9,14 +9,14 @@
         android:allowBackup="true"
         android:icon="@drawable/coffee_cup"
         android:label="@string/app_name"
-        android:name="mcminerApp"
+        android:name="com.example.mcminer.coffeerun.coffeeRunApp"
         android:theme="@style/AppTheme">
 
         <activity
             android:launchMode="singleInstance"
-            android:name="com.example.mcminer.practice.MainActivity"
+            android:name="com.example.mcminer.coffeerun.MainActivity"
             android:label="@string/app_name"
-        android:parentActivityName="com.example.mcminer.practice.MainActivity">
+        android:parentActivityName="com.example.mcminer.coffeerun.MainActivity">
 
        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,10 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter> 
         </activity>
-         <activity android:name="com.example.mcminer.practice.NotificationReceiver" >
+         <activity android:name="com.example.mcminer.coffeerun.NotificationReceiver" >
     </activity>
 
-        <activity android:name="com.example.mcminer.practice.SendMessage" >
+        <activity android:name="com.example.mcminer.coffeerun.SendMessage" >
        </activity>
         <!--<receiver android:name=".AlarmReceiver">-->
             <!--<intent-filter>-->

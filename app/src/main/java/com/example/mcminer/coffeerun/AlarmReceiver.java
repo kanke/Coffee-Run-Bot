@@ -1,4 +1,4 @@
-package com.example.mcminer.practice;
+package com.example.mcminer.coffeerun;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

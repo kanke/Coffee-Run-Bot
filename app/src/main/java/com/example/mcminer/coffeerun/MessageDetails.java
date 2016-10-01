@@ -1,4 +1,4 @@
-package com.example.mcminer.practice;
+package com.example.mcminer.coffeerun;
 
 /**
  * Created by kanke on 28/09/2016.

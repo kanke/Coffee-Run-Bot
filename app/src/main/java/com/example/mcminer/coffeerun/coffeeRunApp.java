@@ -1,4 +1,4 @@
-package com.example.mcminer.practice;
+package com.example.mcminer.coffeerun;
 
 import android.app.Application;
 import android.app.NotificationManager;
@@ -15,7 +15,7 @@ import org.altbeacon.beacon.startup.RegionBootstrap;
 /**
  * Created by kankeishaku on 22/11/2014.
  */
-public class mcminerApp extends Application implements BootstrapNotifier {
+public class coffeeRunApp extends Application implements BootstrapNotifier {
 
     private BeaconManager mBeaconManager;
     private Region mAllBeaconsRegion;
